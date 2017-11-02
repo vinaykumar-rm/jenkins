@@ -75,17 +75,14 @@ pipeline {
                 /usr/share/apache-maven-3.5.0/bin/mvn test -fae
                 /usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
         }
+        
       }
     }
-    stage('Build RSDAM and UI')
-    {
+    stage('Build RSDAM and UI') {
       parallel {
-        stage('Build RSDAM')
-        {
-          steps 
-          {
-            dir(path: 'rsdam/rsdam-solution') 
-            {
+        stage('Build RSDAM') {
+          steps {
+            dir(path: 'rsdam/rsdam-solution') {
               sh '''# Set version number
                     /usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
               sh '''# compile project
@@ -94,14 +91,12 @@ pipeline {
                     /usr/share/apache-maven-3.5.0/bin/mvn test -fae
                     /usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
             }
+            
           }
         }
-        stage('Build UI')
-        {
-          steps 
-          {
-            dir(path: 'ui') 
-            {
+        stage('Build UI') {
+          steps {
+            dir(path: 'ui') {
               sh '''# clean
                     bower cache clean'''
               sh '''# install
@@ -111,6 +106,7 @@ pipeline {
               sh '''# compile
                     sudo npm run compile'''
             }
+            
           }
         }
       }
