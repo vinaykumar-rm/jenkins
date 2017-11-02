@@ -54,14 +54,65 @@ pipeline {
       steps {
         dir(path: 'Dataplatform/dataplatform-solution') {
           sh '''# Set version number
-/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+                /usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
           sh '''# compile project
-/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+                /usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
           sh '''# Run Tests
-/usr/share/apache-maven-3.5.0/bin/mvn test -fae
-/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
+                /usr/share/apache-maven-3.5.0/bin/mvn test -fae
+                /usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
         }
         
+      }
+    }
+    stage('Build RSConnet') {
+      steps {
+        dir(path: 'rsconnect/rsconnect-solution') {
+          sh '''# Set version number
+                /usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+          sh '''# compile project
+                /usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+          sh '''# Run Tests
+                /usr/share/apache-maven-3.5.0/bin/mvn test -fae
+                /usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
+        }
+      }
+    }
+    stage('Build RSDAM and UI')
+    {
+      parallel {
+        stage('Build RSDAM')
+        {
+          steps 
+          {
+            dir(path: 'rsdam/rsdam-solution') 
+            {
+              sh '''# Set version number
+                    /usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+              sh '''# compile project
+                    /usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+              sh '''# Run Tests
+                    /usr/share/apache-maven-3.5.0/bin/mvn test -fae
+                    /usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
+            }
+          }
+        }
+        stage('Build UI')
+        {
+          steps 
+          {
+            dir(path: 'ui') 
+            {
+              sh '''# clean
+                    bower cache clean'''
+              sh '''# install
+                    npm install
+                    bower install
+                    sudo npm i -g gulp-cli'''
+              sh '''# compile
+                    sudo npm run compile'''
+            }
+          }
+        }
       }
     }
   }
