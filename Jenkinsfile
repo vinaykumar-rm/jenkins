@@ -72,8 +72,8 @@ pipeline {
           sh '''# compile project
 /usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
           sh '''# Run Tests
-/usr/share/apache-maven-3.5.0/bin/mvn test -fae
-/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
+#/usr/share/apache-maven-3.5.0/bin/mvn test -fae
+#/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
         }
         
       }
