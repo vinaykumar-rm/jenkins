@@ -214,9 +214,11 @@ done'''
         }
         stage('RSConnect') {
           steps {
-            sh '''rsconnect_workspace=$WORKSPACE/rsconnect/rsconnect-solution
+            sh '''rsconnect_workspace=$WORKSPACE/rsconnect/rsconnect-solution/
 droppath=$WORKSPACE/docker
 droppath_temp="$droppath/jar/"
+
+cd "$rsconnect_workspace"
 
 for d in */ ; do
 	tempdir=$rsconnect_workspace/$d/target/
