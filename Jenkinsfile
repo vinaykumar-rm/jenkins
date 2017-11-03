@@ -98,13 +98,13 @@ pipeline {
           steps {
             dir(path: 'ui') {
               sh '''# clean
-bower cache clean'''
+#bower cache clean'''
               sh '''# install
-npm install
-bower install
+#npm install
+#bower install
 #npm i -g gulp-cli'''
               sh '''# compile
-npm run compile'''
+#npm run compile'''
             }
             
           }
@@ -323,11 +323,11 @@ done
 
 cp -R node_modules/ build/unbundled/ui-platform/
 
-cd ui-platform/build/unbundled/
+cd build/unbundled/
 
 tar -czf ui-platform-1.1.$BUILD_NUMBER.tar.gz ui-platform
 
-rm -rf /var/lib/rs/docker/package/ui-platform*
+#rm -rf /var/lib/rs/docker/package/ui-platform*
 
 cp ui-platform-1.1.$BUILD_NUMBER.tar.gz $WORKSPACE/docker'''
             }
