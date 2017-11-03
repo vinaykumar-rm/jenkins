@@ -356,6 +356,7 @@ cp ui-platform-1.1.$BUILD_NUMBER.tar.gz $WORKSPACE/docker'''
           sh '''find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
 chmod +x build.sh
 SOURCE_DIR=$WORKSPACE/docker
+BUILD_NUMBER="1.1.$BUILD_NUMBER"
 
 ./build.sh $SOURCE_DIR $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER dev'''
         }
