@@ -98,13 +98,13 @@ pipeline {
           steps {
             dir(path: 'ui') {
               sh '''# clean
-bower cache clean'''
+#bower cache clean'''
               sh '''# install
-npm install
-bower install
+#npm install
+#bower install
 #npm i -g gulp-cli'''
               sh '''# compile
-npm run compile'''
+#npm run compile'''
             }
             
           }
@@ -150,7 +150,7 @@ cd "$rdp_workspace"
 
 droppath_temp="$droppath/jar/"
 
-declare -a rdp_projects=(\'frameworksvc-entitymanagesvc-topology\' \'frameworksvc-eventmanagesvc-topology\' \'frameworksvc-entitygovernsvc-topology\' \'platformsvc-apihostsvc\' \'frameworksvc-entityfamilygovernsvc-topology\' \'frameworksvc-entityfamilymanagesvc-topology\' \'frameworksvc-entitymanagemodelsvc-topology\' \'frameworksvc-internaleventmanagesvc-topology\' \'frameworksvc-notificationmanagesvc-topology\' \'frameworksvc-requestmanagesvc-topology\' \'frameworksvc-binaryobjectmanagesvc-topology\' \'frameworksvc-configurationmanagesvc-topology\' \'frameworksvc-erroreventmanagesvc-topology\' \'frameworksvc-externaleventmanagesvc-topology\' \'enginesvc-commonlib\' \'frameworksvc-entitygraphcomputesvc-topology\' \'frameworksvc-binarystreamobjectmanagesvc-topology\' \'appsvc-entitysvc-topology\');
+declare -a rdp_projects=(\'frameworksvc-entitymanagesvc-topology\' \'frameworksvc-eventmanagesvc-topology\' \'frameworksvc-entitygovernsvc-topology\' \'platformsvc-apihostsvc\' \'frameworksvc-entityfamilygovernsvc-topology\' \'frameworksvc-entityfamilymanagesvc-topology\' \'frameworksvc-entitymanagemodelsvc-topology\' \'frameworksvc-notificationmanagesvc-topology\' \'frameworksvc-requestmanagesvc-topology\' \'frameworksvc-binaryobjectmanagesvc-topology\' \'frameworksvc-configurationmanagesvc-topology\' \'frameworksvc-erroreventmanagesvc-topology\' \'frameworksvc-externaleventmanagesvc-topology\' \'enginesvc-commonlib\' \'frameworksvc-entitygraphcomputesvc-topology\' \'frameworksvc-binarystreamobjectmanagesvc-topology\' \'appsvc-entitysvc-topology\');
 
 jarfile=\'\'
 sourcefilepath=\'\'
