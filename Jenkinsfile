@@ -116,13 +116,7 @@ pipeline {
         dir(path: 'docker') {
           sh '''#Cleanup and creating drop path
 
-rm -rf "jar"
-rm -rf "config"
-rm -rf "templates"
-rm -rf "rsconnect"
-rm -rf "nodejs"
-rm -rf "input_files"
-'''
+rm -rf *'''
         }
         
       }
@@ -336,6 +330,38 @@ cp ui-platform-1.1.$BUILD_NUMBER.tar.gz $WORKSPACE/docker'''
             
           }
         }
+      }
+    }
+    stage('Create Docker Containers') {
+      steps {
+        dir(path: 'devops/violet/Docker/Swarm/pre-built/') {
+          sh '''find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
+sudo chmod +x build.sh
+
+sudo ./build.sh $SOURCE_DIR $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER dev'''
+        }
+        
+        sh '''echo "Generating rdp deploy package"
+
+packageversion=$(date +%m%d%y.%H%M)
+TAG_SUFFIX=dev
+
+cd $WORKSPACE/devops/violet/Docker/Swarm/30-rdp-deploy
+find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
+sudo ./build.sh $SOURCE_DIR  $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}
+
+
+#Tenant Onboarding
+echo "Building Tenant On-boarding"
+cd $WORKSPACE/devops/violet/Docker/Swarm/35-tenant-deploy
+sudo ./build.sh $SOURCE_DIR $packageversion
+
+#Code base upgrade
+echo "Building code base upgrade"
+cd $WORKSPACE/devops/violet/Docker/Swarm/46-upgrade
+chmod +x ./build.sh
+find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
+sudo ./build.sh $SOURCE_DIR $packageversion ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}'''
       }
     }
   }
