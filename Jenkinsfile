@@ -102,7 +102,7 @@ bower cache clean'''
               sh '''# install
 npm install
 bower install
-sudo npm i -g gulp-cli'''
+npm i -g gulp-cli'''
               sh '''# compile
 sudo npm run compile'''
             }
