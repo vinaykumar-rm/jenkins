@@ -104,7 +104,7 @@ npm install
 bower install
 #npm i -g gulp-cli'''
               sh '''# compile
-sudo npm run compile'''
+npm run compile'''
             }
             
           }
