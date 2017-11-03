@@ -336,9 +336,9 @@ cp ui-platform-1.1.$BUILD_NUMBER.tar.gz $WORKSPACE/docker'''
       steps {
         dir(path: 'devops/violet/Docker/Swarm/pre-built/') {
           sh '''find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
-sudo chmod +x build.sh
+chmod +x build.sh
 
-sudo ./build.sh $SOURCE_DIR $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER dev'''
+./build.sh $SOURCE_DIR $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER dev'''
         }
         
         sh '''echo "Generating rdp deploy package"
