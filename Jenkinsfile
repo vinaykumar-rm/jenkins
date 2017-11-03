@@ -111,5 +111,104 @@ sudo npm run compile'''
         }
       }
     }
+    stage('Cleanup Docker Folder') {
+      steps {
+        dir(path: 'docker') {
+          sh '''#Cleanup and creating drop path
+
+rm -rf "jar"
+rm -rf "config"
+rm -rf "templates"
+rm -rf "rsconnect"
+rm -rf "nodejs"
+rm -rf "input_files"
+'''
+        }
+        
+      }
+    }
+    stage('Create Directory structure') {
+      steps {
+        dir(path: 'docker') {
+          sh '''mkdir -p config/services
+mkdir -p config/messages
+mkdir templates
+mkdir rsconnect
+mkdir jar
+mkdir nodejs
+mkdir input_files'''
+        }
+        
+      }
+    }
+    stage('Copy RDP Files') {
+      steps {
+        sh '''rdp_workspace=$WORKSPACE/Dataplatform/dataplatform-solution
+droppath=$WORKSPACE/docker
+
+cd "$rdp_workspace"
+
+droppath_temp="$droppath/jar/"
+
+declare -a rdp_projects=(\'frameworksvc-entitymanagesvc-topology\' \'frameworksvc-eventmanagesvc-topology\' \'frameworksvc-entitygovernsvc-topology\' \'platformsvc-apihostsvc\' \'frameworksvc-entityfamilygovernsvc-topology\' \'frameworksvc-entityfamilymanagesvc-topology\' \'frameworksvc-entitymanagemodelsvc-topology\' \'frameworksvc-internaleventmanagesvc-topology\' \'frameworksvc-notificationmanagesvc-topology\' \'frameworksvc-requestmanagesvc-topology\' \'frameworksvc-binaryobjectmanagesvc-topology\' \'frameworksvc-configurationmanagesvc-topology\' \'frameworksvc-erroreventmanagesvc-topology\' \'frameworksvc-externaleventmanagesvc-topology\' \'enginesvc-commonlib\' \'frameworksvc-entitygraphcomputesvc-topology\' \'frameworksvc-binarystreamobjectmanagesvc-topology\' \'appsvc-entitysvc-topology\');
+
+jarfile=\'\'
+sourcefilepath=\'\'
+
+for i in "${rdp_projects[@]}"
+do
+	sourcefilepath="$rdp_workspace/$i/target/"
+	cd "$sourcefilepath"
+
+	jarfile=$(ls -t | grep "$i" |  head -n1 )
+	sourcefilepath="$sourcefilepath$jarfile"	
+   
+	if [ -z "$jarfile" ] && [ -f "$" ];
+	then
+		echo "JAR file not found for : $i"
+	else
+		cp "$sourcefilepath" "$droppath_temp"
+	fi
+done
+
+#Copy config
+tempdir="$rdp_workspace/platformsvc-configmanager/src/main/resources"
+droppath_temp="$droppath/config/"
+
+cp "$tempdir/dataplatformpodconfig_template.json" "$droppath_temp"
+cp "$tempdir/tenantserviceconfig_template.json" "$droppath_temp"
+cp "$tempdir/log4j2.xml" "$droppath_temp"
+cp "$tempdir/logstash.conf" "$droppath_temp"
+cp "$tempdir/messageconfig.json" "$droppath_temp"
+
+#ES Mappings
+tempdir="$rdp_workspace/techsvc-searchmodelmanager/src/main/resources"
+droppath_temp="$droppath/templates/"
+
+for f in $tempdir/*.json; 
+do
+    cp $f "$droppath_temp"
+done
+
+#Nodejs
+tempdir="$rdp_workspace/platformsvc-authenticationsvc/src"
+droppath_temp="$droppath/nodejs/"
+cp -R $tempdir/keys $droppath_temp
+mkdir -p "$droppath_temp/files/"
+cp -R $tempdir/config "$droppath_temp/files/"
+cp -R $tempdir/server "$droppath_temp/files/"
+cp $tempdir/app.js "$droppath_temp/files/"
+cp $tempdir/package.json "$droppath_temp/files/"
+
+#templates for tenant onboarding
+tempdir="$rdp_workspace/platformsvc-configmanager/src/main/resources"
+droppath_temp="$droppath/input_files/"
+
+for f in $tempdir/*.json; 
+do
+	cp $f "$droppath_temp"
+done'''
+      }
+    }
   }
 }
