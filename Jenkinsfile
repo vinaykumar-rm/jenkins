@@ -141,9 +141,11 @@ mkdir input_files'''
         
       }
     }
-    stage('Copy RDP Files') {
-      steps {
-        sh '''rdp_workspace=$WORKSPACE/Dataplatform/dataplatform-solution
+    stage('Copy Files') {
+      parallel {
+        stage('RDP') {
+          steps {
+            sh '''rdp_workspace=$WORKSPACE/Dataplatform/dataplatform-solution
 droppath=$WORKSPACE/docker
 
 cd "$rdp_workspace"
@@ -208,6 +210,128 @@ for f in $tempdir/*.json;
 do
 	cp $f "$droppath_temp"
 done'''
+          }
+        }
+        stage('RSConnect') {
+          steps {
+            sh '''rsconnect_workspace=$WORKSPACE/rsconnect/rsconnect-solution
+droppath=$WORKSPACE/docker
+droppath_temp="$droppath/jar/"
+
+for d in */ ; do
+	tempdir=$rsconnect_workspace/$d/target/
+
+	if [ -d "$tempdir" ];
+	then
+		cd $tempdir
+
+		prj=${d////}
+		jarfile=$(ls -t | grep "$prj" |  head -n1 )
+
+		if [ -f "$jarfile" ];
+		then
+			cp "$jarfile" "$droppath_temp"
+		fi
+	fi
+
+    cd "$rsconnect_workspace"
+done
+
+#rsconnect driver
+cd "$rsconnect_workspace"
+
+droppath_temp="$droppath/rsconnect/"
+cp rsconnect-driver/src/main/resources/rsconnect-driver.sh $droppath_temp/rsconnect-driver.sh
+
+#COP config
+droppath_temp="$droppath/config/services/"
+cp rsconnect-core/src/main/resources/com/riversand/rsconnect/common/rsconnect/driver/services/rsconnectservicesconfig_template.json $droppath_temp/rsconnectservicesconfig.json
+
+#Message config
+cp rsconnect-core/src/main/resources/com/riversand/rsconnect/common/rsconnect/driver/messages/rsconnectmessageconfig.json $droppath/config/messages/
+
+#Message config - rsconnect inbound service
+cp rsconnect-entityinboundsvc/src/main/resources/rsinboundmessageconfig.json $droppath/config/messages/
+
+#templates for tenant onboarding
+tempdir="$rsconnect_workspace/rsconnect-core/src/main/resources/com/riversand/rsconnect/common/rsconnect/driver/services/"
+droppath_temp="$droppath/input_files/"
+
+for f in $tempdir/*.json; 
+do
+	cp $f "$droppath_temp"
+done
+
+#copy reconnect tenant onboarding - topology config file
+cp $rsconnect_workspace/rsconnect-entityinboundsvc/src/main/resources/rsconnectbpftopologiesconfig.json $droppath/input_files/
+'''
+          }
+        }
+        stage('DAM') {
+          steps {
+            sh '''rsdam_workspace=$WORKSPACE/rsdam/rsdam-solution/
+droppath=$WORKSPACE/docker
+
+cd "$rsdam_workspace"
+
+droppath_temp="$droppath/jar/"
+for d in */ ; do
+	tempdir=$rsdam_workspace/$d/target/
+
+	if [ -d "$tempdir" ];
+	then
+		cd $tempdir
+
+		prj=${d////}
+		jarfile=$(ls -t | grep "$prj" |  head -n1 )
+
+		if [ -f "$jarfile" ];
+		then
+			cp "$jarfile" "$droppath_temp"
+		fi
+	fi
+
+    cd "$rsdam_workspace"
+done
+
+#rsconnect driver
+cd "$rsdam_workspace"
+
+#RSDAM config
+droppath_temp="$droppath/config/services/"
+cp rsdam-core/src/main/resources/com/riversand/rsdam/common/services/rsdamserviceconfig_template.json $droppath_temp/rsdamserviceconfig.json
+
+#Message config
+cp rsdam-core/src/main/resources/com/riversand/rsdam/common/services/rsdammessageconfig.json $droppath/config/messages/
+
+#templates for tenant onboarding
+tempdir="$rsdam_workspace/rsdam-core/src/main/resources/com/riversand/rsdam/common/services/"
+droppath_temp="$droppath/input_files/"
+
+for f in $tempdir/*.json; 
+do
+	echo $f
+	cp $f "$droppath_temp"
+done
+'''
+          }
+        }
+        stage('UI') {
+          steps {
+            dir(path: 'ui') {
+              sh '''cp -R node_modules/ build/unbundled/ui-platform/
+
+cd ui-platform/build/unbundled/
+
+tar -czf ui-platform-1.1.$BUILD_NUMBER.tar.gz ui-platform
+
+rm -rf /var/lib/rs/docker/package/ui-platform*
+
+cp ui-platform-1.1.$BUILD_NUMBER.tar.gz $WORKSPACE/docker'''
+            }
+            
+          }
+        }
       }
     }
   }
