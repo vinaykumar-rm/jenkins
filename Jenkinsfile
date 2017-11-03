@@ -54,9 +54,9 @@ pipeline {
       steps {
         dir(path: 'Dataplatform/dataplatform-solution') {
           sh '''# Set version number
-/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+#/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
           sh '''# compile project
-/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+#/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
           sh '''# Run Tests
                 #/usr/share/apache-maven-3.5.0/bin/mvn test -fae
                 #/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
@@ -68,9 +68,9 @@ pipeline {
       steps {
         dir(path: 'rsconnect/rsconnect-solution') {
           sh '''# Set version number
-/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+#/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
           sh '''# compile project
-/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+#/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
           sh '''# Run Tests
 #/usr/share/apache-maven-3.5.0/bin/mvn test -fae
 #/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
@@ -84,9 +84,9 @@ pipeline {
           steps {
             dir(path: 'rsdam/rsdam-solution') {
               sh '''# Set version number
-/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+#/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
               sh '''# compile project
-/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+#/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
               sh '''# Run Tests
 #/usr/share/apache-maven-3.5.0/bin/mvn test -fae
 #/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
@@ -98,13 +98,13 @@ pipeline {
           steps {
             dir(path: 'ui') {
               sh '''# clean
-bower cache clean'''
+#bower cache clean'''
               sh '''# install
-npm install
-bower install
+#npm install
+#bower install
 #npm i -g gulp-cli'''
               sh '''# compile
-npm run compile'''
+#npm run compile'''
             }
             
           }
@@ -130,7 +130,8 @@ mkdir templates
 mkdir rsconnect
 mkdir jar
 mkdir nodejs
-mkdir input_files'''
+mkdir input_files
+mkdir nginx'''
         }
         
       }
@@ -146,7 +147,7 @@ cd "$rdp_workspace"
 
 droppath_temp="$droppath/jar/"
 
-declare -a rdp_projects=(\'frameworksvc-entitymanagesvc-topology\' \'frameworksvc-eventmanagesvc-topology\' \'frameworksvc-entitygovernsvc-topology\' \'platformsvc-apihostsvc\' \'frameworksvc-entityfamilygovernsvc-topology\' \'frameworksvc-entityfamilymanagesvc-topology\' \'frameworksvc-entitymanagemodelsvc-topology\' \'frameworksvc-notificationmanagesvc-topology\' \'frameworksvc-requestmanagesvc-topology\' \'frameworksvc-binaryobjectmanagesvc-topology\' \'frameworksvc-configurationmanagesvc-topology\' \'frameworksvc-erroreventmanagesvc-topology\' \'frameworksvc-externaleventmanagesvc-topology\' \'enginesvc-commonlib\' \'frameworksvc-entitygraphcomputesvc-topology\' \'frameworksvc-binarystreamobjectmanagesvc-topology\' \'appsvc-entitysvc-topology\');
+declare -a rdp_projects=(\'frameworksvc-entitymanagesvc-topology\' \'frameworksvc-eventmanagesvc-topology\' \'frameworksvc-entitygovernsvc-topology\' \'platformsvc-apihostsvc\' \'frameworksvc-entityfamilygovernsvc-topology\' \'frameworksvc-entityfamilymanagesvc-topology\' \'frameworksvc-entitymanagemodelsvc-topology\' \'frameworksvc-notificationmanagesvc-topology\' \'frameworksvc-requestmanagesvc-topology\' \'frameworksvc-binaryobjectmanagesvc-topology\' \'frameworksvc-configurationmanagesvc-topology\' \'frameworksvc-erroreventmanagesvc-topology\' \'frameworksvc-externaleventmanagesvc-topology\' \'enginesvc-commonlib\' \'frameworksvc-entitygraphcomputesvc-topology\' \'frameworksvc-binarystreamobjectmanagesvc-topology\' \'appsvc-entitysvc-topology\' \'frameworksvc-eventreportsvc-topology\' \'frameworksvc-schedulemanagesvc-topology\');
 
 jarfile=\'\'
 sourcefilepath=\'\'
@@ -171,6 +172,10 @@ done
 tempdir="$rdp_workspace/platformsvc-configmanager/src/main/resources"
 droppath_temp="$droppath/config/"
 
+
+cp "$tempdir/prod_dataplatformpodconfig_template.json" "$droppath_temp"
+cp "$tempdir/dev_dataplatformpodconfig_template.json" "$droppath_temp"
+cp "$tempdir/qa_dataplatformpodconfig_template.json" "$droppath_temp"
 cp "$tempdir/dataplatformpodconfig_template.json" "$droppath_temp"
 cp "$tempdir/tenantserviceconfig_template.json" "$droppath_temp"
 cp "$tempdir/log4j2.xml" "$droppath_temp"
@@ -178,7 +183,7 @@ cp "$tempdir/logstash.conf" "$droppath_temp"
 cp "$tempdir/messageconfig.json" "$droppath_temp"
 
 #ES Mappings
-tempdir="$rdp_workspace/techsvc-searchmodelmanager/src/main/resources"
+tempdir="$rdp_workspace/platformsvc-configmanager/src/main/resources/mappings"
 droppath_temp="$droppath/templates/"
 
 for f in $tempdir/*.json; 
@@ -203,7 +208,11 @@ droppath_temp="$droppath/input_files/"
 for f in $tempdir/*.json; 
 do
 	cp $f "$droppath_temp"
-done'''
+done
+
+#Nginx conf
+cp $rdp_workspace/platformsvc-serverhostsvc/nginx_template.conf $droppath/nginx/nginx.conf
+'''
           }
         }
         stage('RSConnect') {
@@ -243,10 +252,14 @@ cp rsconnect-driver/src/main/resources/rsconnect-driver.sh $droppath_temp/rsconn
 droppath_temp="$droppath/config/services/"
 cp rsconnect-core/src/main/resources/com/riversand/rsconnect/common/rsconnect/driver/services/rsconnectservicesconfig_template.json $droppath_temp/rsconnectservicesconfig.json
 
+#RSConnet Inbound config
+droppath_temp="$droppath/config/services/"
+cp rsconnect-entityinboundsvc/src/main/resources/rsinboundserviceconfig_template.json $droppath_temp/rsinboundserviceconfig.json
+
 #Message config
 cp rsconnect-core/src/main/resources/com/riversand/rsconnect/common/rsconnect/driver/messages/rsconnectmessageconfig.json $droppath/config/messages/
 
-#Message config - rsconnect inbound service
+#Message config - Inbound service 
 cp rsconnect-entityinboundsvc/src/main/resources/rsinboundmessageconfig.json $droppath/config/messages/
 
 #templates for tenant onboarding
@@ -258,8 +271,8 @@ do
 	cp $f "$droppath_temp"
 done
 
-#copy reconnect tenant onboarding - topology config file
-cp $rsconnect_workspace/rsconnect-entityinboundsvc/src/main/resources/rsconnectbpftopologiesconfig.json $droppath/input_files/
+# Template for tenant onboarding - Inbound service 
+cp rsconnect-entityinboundsvc/src/main/resources/rsconnectbpftopologiesconfig.json "$droppath_temp"
 '''
           }
         }
@@ -295,10 +308,15 @@ cd "$rsdam_workspace"
 
 #RSDAM config
 droppath_temp="$droppath/config/services/"
-cp rsdam-core/src/main/resources/com/riversand/rsdam/common/services/rsdamserviceconfig_template.json $droppath_temp/rsdamserviceconfig.json
+cp rsdam-core/src/main/resources/com/riversand/rsdam/common/services/prod_rsdamserviceconfig_template.json $droppath_temp/rsdamserviceconfig.json
 
 #Message config
 cp rsdam-core/src/main/resources/com/riversand/rsdam/common/services/rsdammessageconfig.json $droppath/config/messages/
+
+#thumbnails
+mkdir $droppath/assetThumbnails
+cp rsdam-core/src/main/resources/com/riversand/rsdam/common/services/assetThumbnails/* $droppath/assetThumbnails
+
 
 #templates for tenant onboarding
 tempdir="$rsdam_workspace/rsdam-core/src/main/resources/com/riversand/rsdam/common/services/"
