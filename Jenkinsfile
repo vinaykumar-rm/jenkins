@@ -337,6 +337,7 @@ cp ui-platform-1.1.$BUILD_NUMBER.tar.gz $WORKSPACE/docker'''
         dir(path: 'devops/violet/Docker/Swarm/pre-built/') {
           sh '''find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
 chmod +x build.sh
+SOURCE_DIR=$WORKSPACE/docker
 
 ./build.sh $SOURCE_DIR $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER dev'''
         }
