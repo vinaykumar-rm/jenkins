@@ -388,9 +388,9 @@ find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
     }
     stage('Deploy') {
       steps {
-        sh '''cat rdp_deploy_version.txt
+        sh '''deploy_version=$(cat rdp_deploy_version.txt)
 
-echo "ssh -i $KEY_FOLDER_PATH$KEY_FILE_NAME $REMOTE_SERVER /"./auto-deploy-dev1.sh/""'''
+echo "ssh -i $KEY_FOLDER_PATH$KEY_FILE_NAME $REMOTE_SERVER "./auto-deploy-dev1.sh $deploy_version""'''
       }
     }
   }
