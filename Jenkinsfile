@@ -1,5 +1,8 @@
 pipeline {
   agent any
+   environment {
+    RDP_DEPLOY_VERSION = ''
+  }
   stages {
     stage('Clean Workspace') {
       steps {
@@ -392,7 +395,5 @@ find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
       }
     }
   }
-  environment {
-    RDP_DEPLOY_VERSION = ''
-  }
+ 
 }
