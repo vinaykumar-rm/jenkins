@@ -366,7 +366,7 @@ BUILD_NUMBER="1.1.$BUILD_NUMBER"
 packageversion=$(date +%m%d%y.%H%M)
 TAG_SUFFIX=dev
 
-$RDP_DEPLOY_VERSION=$packageversion${TAG_SUFFIX}
+RDP_DEPLOY_VERSION=$packageversion${TAG_SUFFIX}
 
 cd $WORKSPACE/devops/violet/Docker/Swarm/30-rdp-deploy
 find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
