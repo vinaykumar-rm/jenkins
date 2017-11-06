@@ -366,7 +366,7 @@ BUILD_NUMBER="1.1.$BUILD_NUMBER"
 packageversion=$(date +%m%d%y.%H%M)
 TAG_SUFFIX=dev
 
-env.RDP_DEPLOY_VERSION=$packageversion${TAG_SUFFIX}
+echo $packageversion${TAG_SUFFIX} > rdp_deploy_version.txt
 
 cd $WORKSPACE/devops/violet/Docker/Swarm/30-rdp-deploy
 find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
@@ -388,7 +388,7 @@ find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
     }
     stage('Deploy') {
       steps {
-        sh 'echo ${RDP_DEPLOY_VERSION}'
+        sh 'cat rdp_deploy_version.txt'
       }
     }
   }
