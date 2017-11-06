@@ -365,6 +365,7 @@ BUILD_NUMBER="1.1.$BUILD_NUMBER"
 
 packageversion=$(date +%m%d%y.%H%M)
 TAG_SUFFIX=dev
+BUILD_NUMBER="1.1.$BUILD_NUMBER"
 
 echo $packageversion${TAG_SUFFIX} > rdp_deploy_version.txt
 
