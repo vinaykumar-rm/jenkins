@@ -11,7 +11,7 @@ pipeline {
         stage('Dataplatform') {
           steps {
             dir(path: 'Dataplatform') {
-              git(url: 'https://github.com/riversandtechnologies/dataplatform', branch: 'master', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
+              git(url: 'https://github.com/riversandtechnologies/dataplatform', branch: 'dev', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
             }
             
           }
@@ -19,7 +19,7 @@ pipeline {
         stage('RSConnect') {
           steps {
             dir(path: 'rsconnect') {
-              git(url: 'https://github.com/riversandtechnologies/rsconnect.git', branch: 'master', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
+              git(url: 'https://github.com/riversandtechnologies/rsconnect.git', branch: 'dev', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
             }
             
           }
@@ -27,7 +27,7 @@ pipeline {
         stage('RSDAM') {
           steps {
             dir(path: 'rsdam') {
-              git(url: 'https://github.com/riversandtechnologies/rsdam.git', branch: 'master', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
+              git(url: 'https://github.com/riversandtechnologies/rsdam.git', branch: 'dev', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
             }
             
           }
@@ -35,7 +35,7 @@ pipeline {
         stage('UI') {
           steps {
             dir(path: 'ui') {
-              git(url: 'https://github.com/riversandtechnologies/ui-platform.git', branch: 'master', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
+              git(url: 'https://github.com/riversandtechnologies/ui-platform.git', branch: 'dev', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
             }
             
           }
@@ -43,7 +43,7 @@ pipeline {
         stage('devops') {
           steps {
             dir(path: 'devops') {
-              git(url: 'https://github.com/riversandtechnologies/dataplatform-devops.git', branch: 'master', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
+              git(url: 'https://github.com/riversandtechnologies/dataplatform-devops.git', branch: 'dev', credentialsId: '12b41655-3811-40bc-8a87-35ce9b56c3fb')
             }
             
           }
@@ -54,9 +54,9 @@ pipeline {
       steps {
         dir(path: 'Dataplatform/dataplatform-solution') {
           sh '''# Set version number
-#/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
           sh '''# compile project
-#/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
           sh '''# Run Tests
                 #/usr/share/apache-maven-3.5.0/bin/mvn test -fae
                 #/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
@@ -68,9 +68,9 @@ pipeline {
       steps {
         dir(path: 'rsconnect/rsconnect-solution') {
           sh '''# Set version number
-#/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
           sh '''# compile project
-#/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
           sh '''# Run Tests
 #/usr/share/apache-maven-3.5.0/bin/mvn test -fae
 #/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
@@ -84,9 +84,9 @@ pipeline {
           steps {
             dir(path: 'rsdam/rsdam-solution') {
               sh '''# Set version number
-#/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
+/usr/share/apache-maven-3.5.0/bin/mvn versions:set -DnewVersion=1.1.$BUILD_NUMBER'''
               sh '''# compile project
-#/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
+/usr/share/apache-maven-3.5.0/bin/mvn -T 4 compile package install -DskipTests'''
               sh '''# Run Tests
 #/usr/share/apache-maven-3.5.0/bin/mvn test -fae
 #/usr/share/apache-maven-3.5.0/bin/mvn -T 6 cobertura:cobertura -Dcobertura.report.format=xml'''
@@ -98,13 +98,13 @@ pipeline {
           steps {
             dir(path: 'ui') {
               sh '''# clean
-#bower cache clean'''
+bower cache clean'''
               sh '''# install
-#npm install
-#bower install
+npm install
+bower install
 #npm i -g gulp-cli'''
               sh '''# compile
-#npm run compile'''
+npm run compile'''
             }
             
           }
@@ -358,7 +358,7 @@ chmod +x build.sh
 SOURCE_DIR=$WORKSPACE/docker
 BUILD_NUMBER="1.1.$BUILD_NUMBER"
 
-#./build.sh $SOURCE_DIR $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER dev'''
+./build.sh $SOURCE_DIR $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER $BUILD_NUMBER dev'''
         }
         
         sh '''echo "Generating rdp deploy package"
@@ -370,20 +370,20 @@ echo $packageversion${TAG_SUFFIX} > rdp_deploy_version.txt
 
 cd $WORKSPACE/devops/violet/Docker/Swarm/30-rdp-deploy
 find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
-#./build.sh $WORKSPACE/docker  $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}
+./build.sh $WORKSPACE/docker  $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}
 
 
 #Tenant Onboarding
 echo "Building Tenant On-boarding"
 cd $WORKSPACE/devops/violet/Docker/Swarm/35-tenant-deploy
-#./build.sh $WORKSPACE/docker $packageversion${TAG_SUFFIX}
+./build.sh $WORKSPACE/docker $packageversion${TAG_SUFFIX}
 
 #Code base upgrade
 echo "Building code base upgrade"
 cd $WORKSPACE/devops/violet/Docker/Swarm/46-upgrade
 chmod +x ./build.sh
 find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
-#./build.sh $WORKSPACE/docker $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}'''
+./build.sh $WORKSPACE/docker $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}'''
       }
     }
     stage('Deploy') {
