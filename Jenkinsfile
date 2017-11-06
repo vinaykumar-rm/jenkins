@@ -393,6 +393,6 @@ find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
     }
   }
   environment {
-    RDP_DEPLOY_VERSION = ''
+    RDP_DEPLOY_VERSION = 'asd'
   }
 }
