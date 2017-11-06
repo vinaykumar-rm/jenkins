@@ -388,7 +388,7 @@ find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
     }
     stage('Deploy') {
       steps {
-        sh 'echo ${env.RDP_DEPLOY_VERSION}'
+        sh 'echo ${RDP_DEPLOY_VERSION}'
       }
     }
   }
