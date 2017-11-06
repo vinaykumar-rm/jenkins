@@ -395,7 +395,7 @@ ssh -i $KEY_FOLDER_PATH$KEY_FILE_NAME $REMOTE_SERVER ./auto-deploy-dev1.sh $depl
     }
   }
   environment {
-    KEY_FOLDER_PATH = '/home/bigdataadmin/keys/'
+    KEY_FOLDER_PATH = '/var/lib/jenkins/keys/'
     KEY_FILE_NAME = 'riversand-east-1.pem'
     REMOTE_SERVER = 'ubuntu@54.210.14.231'
   }
