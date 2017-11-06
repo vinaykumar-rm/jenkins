@@ -388,11 +388,15 @@ find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
     }
     stage('Deploy') {
       steps {
-        sh 'cat rdp_deploy_version.txt'
+        sh '''cat rdp_deploy_version.txt
+
+echo "ssh -i $KEY_FOLDER_PATH$KEY_FILE_NAME $REMOTE_SERVER /"./auto-deploy-dev1.sh/""'''
       }
     }
   }
   environment {
-    RDP_DEPLOY_VERSION = 'asd-asd'
+    KEY_FOLDER_PATH = '/home/bigdataadmin/keys/'
+    KEY_FILE_NAME = 'riversand-east-1.pem'
+    REMOTE_SERVER = 'ubuntu@54.210.14.231'
   }
 }
