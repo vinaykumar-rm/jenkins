@@ -370,20 +370,20 @@ RDP_DEPLOY_VERSION=$packageversion${TAG_SUFFIX}
 
 cd $WORKSPACE/devops/violet/Docker/Swarm/30-rdp-deploy
 find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
-./build.sh $WORKSPACE/Docker  $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}
+./build.sh $WORKSPACE/docker  $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}
 
 
 #Tenant Onboarding
 echo "Building Tenant On-boarding"
 cd $WORKSPACE/devops/violet/Docker/Swarm/35-tenant-deploy
-./build.sh $WORKSPACE/Docker $packageversion${TAG_SUFFIX}
+./build.sh $WORKSPACE/docker $packageversion${TAG_SUFFIX}
 
 #Code base upgrade
 echo "Building code base upgrade"
 cd $WORKSPACE/devops/violet/Docker/Swarm/46-upgrade
 chmod +x ./build.sh
 find . -type f -name \'*.sh\' -exec sed -i -e \'s/\\r$//\' {} \\;
-./build.sh $WORKSPACE/Docker $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}'''
+./build.sh $WORKSPACE/docker $packageversion${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX} ${BUILD_NUMBER}${TAG_SUFFIX}'''
       }
     }
     stage('Deploy') {
